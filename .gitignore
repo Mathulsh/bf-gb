@@ -1,0 +1,23 @@
+# Rust build directory
+/target
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Database files
+*.duckdb
+*.duckdb.wal
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files (may contain secrets)
+.env
+.env.local
