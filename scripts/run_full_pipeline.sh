@@ -7,16 +7,16 @@ set -e
 REDIS_HOST="127.0.0.1"
 REDIS_PORT="6379"
 REDIS_PASSWORD=""
-DATA_FILE="demo/data-98.csv"
+DATA_FILE="demo/data.csv"
 
 # 特征组合参数
 FEATURES=98
-SELECT=5
+SELECT=4
 
 # 训练参数
 FOLDS=5
 N_ESTIMATORS=100
-INSTANCES=10 # 10-8min 12-13min ，16-13min， 28-14min
+INSTANCES=7 # 目前测试7最快
 
 # 程序路径
 BF_GB="./target/release/bf-gb"

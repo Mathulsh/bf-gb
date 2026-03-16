@@ -9,9 +9,10 @@ set -e
 REDIS_HOST="127.0.0.1"
 REDIS_PORT="6379"
 REDIS_PASSWORD=""
-DATA_FILE="demo/data-98.csv"
+DATA_FILE="demo/data.csv"
 FOLDS=5
 N_ESTIMATORS=100
+RANDOM_SEED=0
 
 # 实例数量，默认 2
 INSTANCES=${1:-2}
@@ -59,6 +60,7 @@ for i in $(seq 1 $INSTANCES); do
         --redis-password "$REDIS_PASSWORD" \
         --folds "$FOLDS" \
         --n-estimators "$N_ESTIMATORS" \
+        --random-seed "$RANDOM_SEED" \
         > "$LOG_FILE" 2>&1 &
     
     sleep 0.5

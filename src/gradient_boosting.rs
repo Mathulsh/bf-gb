@@ -18,14 +18,14 @@ pub struct GradientBoosting {
 
 impl GradientBoosting {
     /// Create a new GradientBoostingClassifier
-    pub fn new(n_estimators: usize, learning_rate: f64, max_depth: usize) -> Self {
+    pub fn new(n_estimators: usize, learning_rate: f64, max_depth: usize, seed: u64) -> Self {
         Self {
             trees: Vec::with_capacity(n_estimators),
             n_classes: 0,
             learning_rate,
             n_estimators,
             max_depth,
-            seed: 0,
+            seed,
         }
     }
 

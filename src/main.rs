@@ -151,7 +151,7 @@ fn cmd_train(
     n_estimators: usize,
     learning_rate: f64,
     max_depth: usize,
-    random_seed: u64,
+    seed: u64,
 ) -> Result<()> {
     info!("Starting train command");
 
@@ -159,10 +159,10 @@ fn cmd_train(
     info!("  n_estimators = {}", n_estimators);
     info!("  learning_rate = {}", learning_rate);
     info!("  max_depth = {}", max_depth);
-    info!("  random_seed = {}", random_seed);
+    info!("  seed = {}", seed);
 
     let dataset = Dataset::from_csv(data_path)?;
-    let trainer = Trainer::new(dataset, n_estimators, learning_rate, max_depth, n_folds, random_seed);
+    let trainer = Trainer::new(dataset, n_estimators, learning_rate, max_depth, n_folds, seed);
 
     let redis_config = RedisConfig {
         host: redis_host.to_string(),

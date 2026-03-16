@@ -87,30 +87,31 @@ impl Dataset {
 pub struct StratifiedKFold {
     n_splits: usize,
     shuffle: bool,
+    seed: u64,
 }
 
 impl StratifiedKFold {
-    pub fn new(n_splits: usize, shuffle: bool) -> Self {
+    pub fn new(n_splits: usize, shuffle: bool, seed: u64) -> Self {
         Self {
             n_splits,
             shuffle,
+            seed,
         }
     }
 
-    pub fn split(&self, y: &Array1<usize>, seed: u64) -> Vec<(Vec<usize>, Vec<usize>)> {
+    pub fn split(&self, y: &Array1<usize>) -> Vec<(Vec<usize>, Vec<usize>)> {
         let mut class_indices: HashMap<usize, Vec<usize>> = HashMap::new();
         for (idx, &label) in y.iter().enumerate() {
             class_indices.entry(label).or_default().push(idx);
         }
 
-        let mut rng = ChaCha20Rng::seed_from_u64(seed);
+        let mut rng = ChaCha20Rng::seed_from_u64(self.seed);
         let mut fold_indices: Vec<Vec<usize>> = vec![Vec::new(); self.n_splits];
 
         for indices in class_indices.values_mut() {
             if self.shuffle {
                 indices.shuffle(&mut rng);
             }
-
             for (i, &idx) in indices.iter().enumerate() {
                 fold_indices[i % self.n_splits].push(idx);
             }
@@ -127,7 +128,6 @@ impl StratifiedKFold {
                 .collect();
             splits.push((train_indices, test_indices));
         }
-
         splits
     }
 }
@@ -207,8 +207,8 @@ impl Trainer {
         let x = self.dataset.select_features(&task.features)?;
         let y = &self.dataset.labels;
 
-        let cv = StratifiedKFold::new(self.n_folds, true);
-        let splits = cv.split(y, self.random_state);
+        let cv = StratifiedKFold::new(self.n_folds, true, self.random_state);
+        let splits = cv.split(&y);
 
         let mut f1_scores = Vec::with_capacity(self.n_folds);
 
@@ -224,7 +224,8 @@ impl Trainer {
             let gb = GradientBoosting::new(
                 self.n_estimators,
                 self.learning_rate,
-                self.max_depth
+                self.max_depth,
+                self.random_state,
             ).with_random_state(self.random_state);
 
             let gb = gb.fit(&x_train, &y_train)
